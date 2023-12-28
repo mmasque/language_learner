@@ -38,9 +38,7 @@ impl Word {
             Answer::Correct => 10.0,
             Answer::Incorrect => -10.0,
         };
-        println!("Rating change: {}", rating_change);
         self.rating = f64::max(0.0, f64::min(self.rating + rating_change, 100.0));
-        println!("Rating: {}", self.rating);
     }
 
     // For now always target -> known
@@ -53,8 +51,6 @@ impl Word {
 
     // Process response
     fn response_matches_known(&self, response: &str) -> Answer {
-        println!("Response: {}", response);
-        println!("Response matches known: {}", response == self.known);
         (response == self.known).into()
     }
 }
@@ -91,11 +87,11 @@ fn main() {
             word.update_rating(response_outcome);
             practiced_words.push(word);
         } else {
-            // practiced all the words
+            // practiced all the words, remake the list
             words = practiced_words;
+            words.reverse(); // popping and then pushing reverses the order we started withs
             words.sort_by(|v, w| w.rating.total_cmp(&v.rating));
             practiced_words = vec![];
-            println!("Words: {:?}, ", words.iter().map(|x| &x.known));
         }
     }
 }
