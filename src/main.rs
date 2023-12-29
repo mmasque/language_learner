@@ -32,9 +32,9 @@ impl Game {
         let assistant_request = CreateAssistantRequestArgs::default()
             .model("gpt-3.5-turbo")
             .instructions(
-                "On input of a single english word with its dutch translation (<english word, dutch translation>),
+                "On input of a single english word,
                 return an english sentence containing this word. It should be translateable
-                into dutch by a B1 level student, using the dutch translation.",
+                into dutch by a B1 level student.",
             )
             .build()
             .unwrap();
@@ -44,9 +44,9 @@ impl Game {
         let assistant_request = CreateAssistantRequestArgs::default()
         .model("gpt-3.5-turbo")
         .instructions(
-            "You are a dutch teacher. The student will input <english sentence>, <dutch translation attempt>.
-            Provide concise feedback on their translation attempt, address every mistake.
-            If completely correct, just say \"Well done, your translation is correct!\"",
+            "You are a dutch teacher. The student will input an english sentence together with a dutch translation
+            attempt of the sentence.
+            Provide concise feedback on their translation attempt, address every mistake.",
         )
         .build()
         .unwrap();
@@ -169,7 +169,10 @@ impl Game {
 
             let translation_attempt = read_string();
             println!("Checking your answer...");
-            let translation_attempt_input = text_to_translate + "," + &translation_attempt;
+            let translation_attempt_input = format!(
+                "English sentence: {}\n Student's translation attempt: {}",
+                text_to_translate, translation_attempt
+            );
             let translation_feedback = self
                 .get_text_from_assistant(&self.checking_assistant.id, &translation_attempt_input)
                 .await;
